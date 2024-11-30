@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+let cachedLines = null;
+
+async function loadFile(filePath) {
+    try {
+        const response = await fetch(filePath);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch file: ${response.statusText}`);
+        }
+        const text = await response.text();
+        cachedLines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
+    } catch (error) {
+        console.error('Error loading file:', error);
+    }
+}
+
+function getRandomLine() {
+    if (!cachedLines || cachedLines.length === 0) {
+        alert('File has not been loaded yet or is empty.');
+        return;
+    }
+    const randomLine = cachedLines[Math.floor(Math.random() * cachedLines.length)];
+    console.log(randomLine); //TODO: change
+    document.getElementById("item").innerHTML = randomLine;
+}
+
+// Load the file when the page loads
+window.addEventListener('DOMContentLoaded', () => {
+    loadFile('all.txt').catch(error => {
+        console.error('Failed to load file:', error);
+    });
+});
+</script>
+<style>
+@font-face {
+    font-family: 'lotr';
+    src: url('/aniron/anirb___.ttf');
+}
+
+body, html {
+	height: 100%;
+	margin: 0; /* Remove default margins */
+	overflow: hidden; /* Prevent scrolling */
+}
+
+body {
+	background-image: url("valinor.jpg");
+	background-size: cover; /* Ensure the image covers the entire screen */
+	background-position: center; /* Center the image */
+	background-repeat: no-repeat; /* Prevent the image from repeating */
+}
+h1 {
+	text-align: center;
+	font-family: lotr;
+	}
+button {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+#item {
+	margin: 0;
+	position: absolute;
+	top: 80%;	
+	left: 50%;
+  	-ms-transform: translate(-50%, -50%);
+  	transform: translate(-50%, -50%);
+	color: white;
+	background: rgba(0,0,0,0.5);
+
+}
+</style>
+</head>
+<body>
+<h1>LOTR Pictionary</h1>
+<button id="button" type="button" onclick="getRandomLine()">Get a word</button>
+<h1 id="item"></h1>
+</body>
+</html>
